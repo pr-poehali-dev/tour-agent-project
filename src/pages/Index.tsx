@@ -2,72 +2,89 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Slider } from '@/components/ui/slider';
 import Icon from '@/components/ui/icon';
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState('home');
-  const [chatOpen, setChatOpen] = useState(false);
-  const [chatMessages, setChatMessages] = useState<Array<{text: string, sender: 'user' | 'bot'}>>([
-    { text: 'Привет! Я помогу подобрать идеальный тур. Задавайте вопросы!', sender: 'bot' }
-  ]);
-  const [chatInput, setChatInput] = useState('');
+  const [calcLength, setCalcLength] = useState([3]);
+  const [calcMaterial, setCalcMaterial] = useState('mdf');
+  const [calcPrice, setCalcPrice] = useState(45000);
 
-  const tours = [
+  const services = [
     {
-      id: 1,
-      title: 'Банджи-джампинг в горах',
-      price: '15 000 ₽',
-      duration: '1 день',
-      difficulty: 'Экстремальный',
-      image: 'https://cdn.poehali.dev/projects/860eef9e-5ea9-42c7-b3b8-4c56e4d5e9e0/files/0076bf87-cfd4-4045-bb2f-d94f37352f04.jpg',
-      description: 'Прыжок с высоты 200 метров над горным каньоном'
+      icon: 'ChefHat',
+      title: 'Кухни на заказ',
+      description: 'Современные и классические кухни с учётом всех ваших пожеланий',
+      features: ['3D-проект бесплатно', 'Любые размеры', 'Гарантия 5 лет']
     },
     {
-      id: 2,
-      title: 'Восхождение на вершину',
-      price: '45 000 ₽',
-      duration: '5 дней',
-      difficulty: 'Сложный',
-      image: 'https://cdn.poehali.dev/projects/860eef9e-5ea9-42c7-b3b8-4c56e4d5e9e0/files/52f5f7fa-2021-410d-8e39-8a2bcfa56580.jpg',
-      description: 'Покорение снежных вершин с опытными инструкторами'
+      icon: 'Shirt',
+      title: 'Шкафы-купе',
+      description: 'Встроенные и корпусные шкафы, идеально вписанные в интерьер',
+      features: ['Зеркальные двери', 'Внутренняя организация', 'До потолка']
     },
     {
-      id: 3,
-      title: 'Рафтинг на горной реке',
-      price: '8 000 ₽',
-      duration: '3 часа',
-      difficulty: 'Средний',
-      image: 'https://cdn.poehali.dev/projects/860eef9e-5ea9-42c7-b3b8-4c56e4d5e9e0/files/50c931ad-0236-45cc-b089-58b97be78eac.jpg',
-      description: 'Адреналин на бурных порогах с профессиональным гидом'
+      icon: 'Home',
+      title: 'Гардеробные',
+      description: 'Системы хранения любой сложности для вашего удобства',
+      features: ['Планировка под вас', 'Выдвижные системы', 'LED-подсветка']
+    },
+    {
+      icon: 'Briefcase',
+      title: 'Офисная мебель',
+      description: 'Столы, стеллажи и системы хранения для бизнеса',
+      features: ['Модульные решения', 'Быстрое производство', 'Корпоративный стиль']
     }
   ];
 
-  const reviews = [
-    { name: 'Дмитрий К.', rating: 5, text: 'Банджи-джампинг был невероятным! Организация на высшем уровне!', avatar: 'DK' },
-    { name: 'Анна М.', rating: 5, text: 'Рафтинг превзошёл все ожидания. Море эмоций и безопасности!', avatar: 'AM' },
-    { name: 'Сергей П.', rating: 5, text: 'Восхождение на вершину - мечта сбылась! Гиды профессионалы.', avatar: 'СП' }
+  const portfolio = [
+    {
+      id: 1,
+      title: 'Белоснежная кухня',
+      category: 'kitchen',
+      image: 'https://cdn.poehali.dev/projects/860eef9e-5ea9-42c7-b3b8-4c56e4d5e9e0/files/31d142e7-4951-46c4-84d7-bc0102dfedd1.jpg',
+      description: 'Минимализм с деревянными акцентами'
+    },
+    {
+      id: 2,
+      title: 'Встроенный шкаф',
+      category: 'wardrobe',
+      image: 'https://cdn.poehali.dev/projects/860eef9e-5ea9-42c7-b3b8-4c56e4d5e9e0/files/0ee91080-ab2c-446b-ad0a-9c4d5f45f1a7.jpg',
+      description: 'Элегантная система хранения'
+    },
+    {
+      id: 3,
+      title: 'Производство',
+      category: 'process',
+      image: 'https://cdn.poehali.dev/projects/860eef9e-5ea9-42c7-b3b8-4c56e4d5e9e0/files/867bc93b-3385-4a80-8215-2aed94a0d2de.jpg',
+      description: 'Качество в каждой детали'
+    }
   ];
 
-  const handleSendMessage = () => {
-    if (!chatInput.trim()) return;
-    
-    setChatMessages(prev => [...prev, { text: chatInput, sender: 'user' }]);
-    
-    setTimeout(() => {
-      const responses = [
-        'Отличный выбор! Расскажу подробнее об этом туре.',
-        'У нас есть специальные предложения на этот тур. Хотите узнать?',
-        'Для этого тура нужна базовая физическая подготовка. Подойдёт?',
-        'Могу подобрать похожие туры с другим уровнем сложности!'
-      ];
-      const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-      setChatMessages(prev => [...prev, { text: randomResponse, sender: 'bot' }]);
-    }, 1000);
-    
-    setChatInput('');
+  const process = [
+    { step: 1, icon: 'Phone', title: 'Заявка', text: 'Оставьте заявку онлайн или позвоните нам' },
+    { step: 2, icon: 'Ruler', title: 'Замер', text: 'Бесплатный выезд замерщика в удобное время' },
+    { step: 3, icon: 'Palette', title: 'Дизайн-проект', text: '3D-визуализация вашей будущей мебели' },
+    { step: 4, icon: 'Factory', title: 'Производство', text: 'Изготовление мебели 10-15 рабочих дней' },
+    { step: 5, icon: 'Truck', title: 'Доставка и сборка', text: 'Привезём и соберём под ключ' },
+    { step: 6, icon: 'Award', title: 'Гарантия', text: 'Полная гарантия на всю продукцию 5 лет' }
+  ];
+
+  const materials = [
+    { id: 'mdf', name: 'МДФ', price: 15000 },
+    { id: 'chipboard', name: 'ДСП', price: 10000 },
+    { id: 'wood', name: 'Массив дерева', price: 35000 },
+    { id: 'plastic', name: 'Пластик', price: 12000 }
+  ];
+
+  const calculatePrice = (length: number, material: string) => {
+    const baseMaterial = materials.find(m => m.id === material)?.price || 15000;
+    const total = baseMaterial * length;
+    setCalcPrice(total);
   };
 
   const scrollToSection = (section: string) => {
@@ -77,129 +94,144 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-secondary/5 to-accent/5">
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-lg border-b shadow-sm">
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted/30">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b shadow-sm">
         <nav className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2 animate-fade-in">
-            <Icon name="Flame" className="text-primary" size={32} />
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
-              ExtremeGo
-            </h1>
+          <div className="flex items-center gap-3 animate-fade-in">
+            <div className="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center">
+              <Icon name="Home" className="text-white" size={24} />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-primary">МебельПро</h1>
+              <p className="text-xs text-muted-foreground">Корпусная мебель с 2010 года</p>
+            </div>
           </div>
           
           <div className="hidden md:flex items-center gap-6">
             {[
-              { id: 'home', label: 'Главная', icon: 'Home' },
-              { id: 'tours', label: 'Туры', icon: 'Compass' },
-              { id: 'gallery', label: 'Галерея', icon: 'Images' },
-              { id: 'about', label: 'О нас', icon: 'Info' },
-              { id: 'reviews', label: 'Отзывы', icon: 'Star' },
-              { id: 'contacts', label: 'Контакты', icon: 'Mail' }
+              { id: 'home', label: 'Главная' },
+              { id: 'services', label: 'Услуги' },
+              { id: 'portfolio', label: 'Портфолио' },
+              { id: 'calculator', label: 'Калькулятор' },
+              { id: 'process', label: 'Как мы работаем' },
+              { id: 'contact', label: 'Контакты' }
             ].map((item) => (
               <button
                 key={item.id}
                 onClick={() => scrollToSection(item.id)}
-                className={`flex items-center gap-2 transition-all hover:text-primary ${
+                className={`transition-colors hover:text-primary ${
                   activeSection === item.id ? 'text-primary font-semibold' : 'text-foreground'
                 }`}
               >
-                <Icon name={item.icon as any} size={18} />
                 {item.label}
               </button>
             ))}
           </div>
 
-          <Button onClick={() => scrollToSection('contacts')} className="hidden md:flex">
-            Забронировать
+          <Button onClick={() => scrollToSection('contact')} className="hidden md:flex">
+            <Icon name="Phone" size={18} className="mr-2" />
+            Заказать звонок
           </Button>
         </nav>
       </header>
 
       <main className="pt-20">
-        <section id="home" className="min-h-screen flex items-center justify-center relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-secondary/20 to-accent/20 animate-pulse"></div>
-          <div className="container mx-auto px-4 relative z-10 text-center animate-slide-up">
-            <Badge className="mb-4 text-lg px-4 py-2" variant="secondary">
-              <Icon name="Zap" size={20} className="mr-2" />
-              Экстремальные приключения 2024
-            </Badge>
-            <h2 className="text-5xl md:text-7xl font-extrabold mb-6 leading-tight">
-              Живи на полную!
-              <br />
-              <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
-                Почувствуй адреналин
-              </span>
-            </h2>
-            <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Банджи-джампинг, альпинизм, рафтинг — твои экстремальные приключения начинаются здесь
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="text-lg px-8 py-6 shadow-lg hover:shadow-xl transition-all" onClick={() => scrollToSection('tours')}>
-                <Icon name="Rocket" size={24} className="mr-2" />
-                Выбрать тур
-              </Button>
-              <Button size="lg" variant="outline" className="text-lg px-8 py-6" onClick={() => setChatOpen(true)}>
-                <Icon name="MessageCircle" size={24} className="mr-2" />
-                Задать вопрос
-              </Button>
+        <section id="home" className="min-h-screen flex items-center relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5"></div>
+          <div className="container mx-auto px-4 grid md:grid-cols-2 gap-12 items-center relative z-10">
+            <div className="animate-slide-up">
+              <Badge className="mb-4 text-sm px-4 py-2" variant="secondary">
+                <Icon name="Star" size={16} className="mr-2" />
+                14 лет на рынке мебели
+              </Badge>
+              <h2 className="text-5xl md:text-6xl font-extrabold mb-6 leading-tight text-primary">
+                Мебель вашей мечты
+              </h2>
+              <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
+                Производим кухни, шкафы-купе, гардеробные и офисную мебель премиум-качества. 
+                Бесплатный замер и дизайн-проект в подарок.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Button size="lg" className="text-lg px-8 py-6" onClick={() => scrollToSection('calculator')}>
+                  <Icon name="Calculator" size={24} className="mr-2" />
+                  Рассчитать стоимость
+                </Button>
+                <Button size="lg" variant="outline" className="text-lg px-8 py-6" onClick={() => scrollToSection('portfolio')}>
+                  <Icon name="Images" size={24} className="mr-2" />
+                  Портфолио работ
+                </Button>
+              </div>
+
+              <div className="grid grid-cols-3 gap-6 mt-12">
+                {[
+                  { value: '2500+', label: 'Проектов' },
+                  { value: '5 лет', label: 'Гарантия' },
+                  { value: '14 дней', label: 'Производство' }
+                ].map((stat, idx) => (
+                  <div key={idx} className="text-center animate-scale-in" style={{ animationDelay: `${idx * 100}ms` }}>
+                    <div className="text-3xl font-bold text-primary">{stat.value}</div>
+                    <div className="text-sm text-muted-foreground">{stat.label}</div>
+                  </div>
+                ))}
+              </div>
             </div>
 
-            <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-              {[
-                { icon: 'Shield', title: 'Безопасность', text: 'Сертифицированное снаряжение' },
-                { icon: 'Users', title: 'Опыт', text: '10+ лет на рынке' },
-                { icon: 'Award', title: 'Гарантия', text: '100% эмоций' }
-              ].map((item, idx) => (
-                <Card key={idx} className="border-2 hover:border-primary transition-all hover:shadow-lg animate-scale-in" style={{ animationDelay: `${idx * 100}ms` }}>
-                  <CardHeader>
-                    <Icon name={item.icon as any} className="text-primary mb-2" size={40} />
-                    <CardTitle>{item.title}</CardTitle>
-                    <CardDescription>{item.text}</CardDescription>
-                  </CardHeader>
-                </Card>
-              ))}
+            <div className="relative animate-fade-in" style={{ animationDelay: '300ms' }}>
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+                <img 
+                  src="https://cdn.poehali.dev/projects/860eef9e-5ea9-42c7-b3b8-4c56e4d5e9e0/files/31d142e7-4951-46c4-84d7-bc0102dfedd1.jpg" 
+                  alt="Кухня премиум класса" 
+                  className="w-full h-auto"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+              </div>
+              <div className="absolute -bottom-6 -left-6 bg-white rounded-xl shadow-xl p-6 max-w-xs animate-scale-in" style={{ animationDelay: '600ms' }}>
+                <div className="flex items-center gap-4">
+                  <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
+                    <Icon name="Check" className="text-primary" size={32} />
+                  </div>
+                  <div>
+                    <div className="text-2xl font-bold text-primary">100%</div>
+                    <div className="text-sm text-muted-foreground">Довольных клиентов</div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
-        <section id="tours" className="py-20 bg-white">
+        <section id="services" className="py-20 bg-white">
           <div className="container mx-auto px-4">
-            <div className="text-center mb-12 animate-fade-in">
+            <div className="text-center mb-16 animate-fade-in">
               <Badge className="mb-4" variant="outline">
-                <Icon name="Compass" size={18} className="mr-2" />
-                Наши туры
+                <Icon name="Wrench" size={18} className="mr-2" />
+                Наши услуги
               </Badge>
-              <h2 className="text-4xl md:text-5xl font-bold mb-4">Экстремальные приключения</h2>
+              <h2 className="text-4xl md:text-5xl font-bold mb-4 text-primary">Что мы производим</h2>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                От прыжков с высоты до покорения вершин — выбери своё приключение
+                Полный цикл производства корпусной мебели любой сложности
               </p>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-8">
-              {tours.map((tour, idx) => (
-                <Card key={tour.id} className="overflow-hidden hover:shadow-2xl transition-all hover:-translate-y-2 animate-scale-in" style={{ animationDelay: `${idx * 150}ms` }}>
-                  <div className="relative h-64 overflow-hidden">
-                    <img src={tour.image} alt={tour.title} className="w-full h-full object-cover transition-transform hover:scale-110" />
-                    <Badge className="absolute top-4 right-4 bg-primary text-primary-foreground">
-                      {tour.difficulty}
-                    </Badge>
-                  </div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {services.map((service, idx) => (
+                <Card key={idx} className="hover:shadow-xl transition-all hover:-translate-y-1 animate-scale-in border-2" style={{ animationDelay: `${idx * 100}ms` }}>
                   <CardHeader>
-                    <CardTitle className="text-2xl">{tour.title}</CardTitle>
-                    <CardDescription className="text-base">{tour.description}</CardDescription>
+                    <div className="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center mb-4">
+                      <Icon name={service.icon as any} className="text-white" size={32} />
+                    </div>
+                    <CardTitle className="text-xl">{service.title}</CardTitle>
+                    <CardDescription className="text-base">{service.description}</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <Icon name="Clock" size={18} />
-                        {tour.duration}
-                      </div>
-                      <div className="text-2xl font-bold text-primary">{tour.price}</div>
-                    </div>
-                    <Button className="w-full" size="lg">
-                      <Icon name="Calendar" size={18} className="mr-2" />
-                      Забронировать
-                    </Button>
+                    <ul className="space-y-2">
+                      {service.features.map((feature, i) => (
+                        <li key={i} className="flex items-center gap-2 text-sm">
+                          <Icon name="Check" className="text-primary" size={16} />
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
                   </CardContent>
                 </Card>
               ))}
@@ -207,95 +239,200 @@ const Index = () => {
           </div>
         </section>
 
-        <section id="gallery" className="py-20 bg-gradient-to-br from-secondary/10 to-accent/10">
+        <section id="portfolio" className="py-20 bg-gradient-to-br from-muted/30 to-background">
           <div className="container mx-auto px-4">
-            <div className="text-center mb-12 animate-fade-in">
+            <div className="text-center mb-16 animate-fade-in">
               <Badge className="mb-4" variant="outline">
                 <Icon name="Images" size={18} className="mr-2" />
-                Галерея
+                Портфолио
               </Badge>
-              <h2 className="text-4xl md:text-5xl font-bold mb-4">Моменты приключений</h2>
-              <p className="text-xl text-muted-foreground">Реальные эмоции наших клиентов</p>
+              <h2 className="text-4xl md:text-5xl font-bold mb-4 text-primary">Наши работы</h2>
+              <p className="text-xl text-muted-foreground">
+                Более 2500 реализованных проектов по всей России
+              </p>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-4">
-              {tours.map((tour, idx) => (
-                <div key={tour.id} className="relative group overflow-hidden rounded-lg shadow-lg hover:shadow-2xl transition-all animate-scale-in" style={{ animationDelay: `${idx * 100}ms` }}>
-                  <img src={tour.image} alt={tour.title} className="w-full h-80 object-cover transition-transform group-hover:scale-110" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
-                    <div className="text-white">
-                      <h3 className="text-xl font-bold mb-2">{tour.title}</h3>
-                      <p className="text-sm">{tour.description}</p>
+            <Tabs defaultValue="all" className="w-full">
+              <TabsList className="grid w-full max-w-md mx-auto grid-cols-4 mb-12">
+                <TabsTrigger value="all">Все</TabsTrigger>
+                <TabsTrigger value="kitchen">Кухни</TabsTrigger>
+                <TabsTrigger value="wardrobe">Шкафы</TabsTrigger>
+                <TabsTrigger value="process">Процесс</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="all" className="grid md:grid-cols-3 gap-6">
+                {portfolio.map((item, idx) => (
+                  <div key={item.id} className="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-all animate-scale-in" style={{ animationDelay: `${idx * 100}ms` }}>
+                    <img src={item.image} alt={item.title} className="w-full h-80 object-cover transition-transform group-hover:scale-110" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-6">
+                      <Badge className="mb-2 w-fit">{item.category === 'kitchen' ? 'Кухни' : item.category === 'wardrobe' ? 'Шкафы' : 'Производство'}</Badge>
+                      <h3 className="text-2xl font-bold text-white mb-2">{item.title}</h3>
+                      <p className="text-white/90 text-sm">{item.description}</p>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </TabsContent>
+
+              <TabsContent value="kitchen" className="grid md:grid-cols-3 gap-6">
+                {portfolio.filter(p => p.category === 'kitchen').map((item) => (
+                  <div key={item.id} className="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-all">
+                    <img src={item.image} alt={item.title} className="w-full h-80 object-cover transition-transform group-hover:scale-110" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-6">
+                      <h3 className="text-2xl font-bold text-white mb-2">{item.title}</h3>
+                      <p className="text-white/90 text-sm">{item.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </TabsContent>
+
+              <TabsContent value="wardrobe" className="grid md:grid-cols-3 gap-6">
+                {portfolio.filter(p => p.category === 'wardrobe').map((item) => (
+                  <div key={item.id} className="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-all">
+                    <img src={item.image} alt={item.title} className="w-full h-80 object-cover transition-transform group-hover:scale-110" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-6">
+                      <h3 className="text-2xl font-bold text-white mb-2">{item.title}</h3>
+                      <p className="text-white/90 text-sm">{item.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </TabsContent>
+
+              <TabsContent value="process" className="grid md:grid-cols-3 gap-6">
+                {portfolio.filter(p => p.category === 'process').map((item) => (
+                  <div key={item.id} className="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-all">
+                    <img src={item.image} alt={item.title} className="w-full h-80 object-cover transition-transform group-hover:scale-110" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-6">
+                      <h3 className="text-2xl font-bold text-white mb-2">{item.title}</h3>
+                      <p className="text-white/90 text-sm">{item.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </TabsContent>
+            </Tabs>
           </div>
         </section>
 
-        <section id="about" className="py-20 bg-white">
+        <section id="calculator" className="py-20 bg-white">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto">
               <div className="text-center mb-12 animate-fade-in">
                 <Badge className="mb-4" variant="outline">
-                  <Icon name="Info" size={18} className="mr-2" />
-                  О компании
+                  <Icon name="Calculator" size={18} className="mr-2" />
+                  Калькулятор стоимости
                 </Badge>
-                <h2 className="text-4xl md:text-5xl font-bold mb-6">ExtremeGo — эксперты в экстриме</h2>
-                <p className="text-xl text-muted-foreground leading-relaxed">
-                  Мы создаём незабываемые приключения с 2014 года. Наша команда — сертифицированные инструкторы
-                  с международными лицензиями. Более 10,000 довольных клиентов доверили нам свои эмоции.
+                <h2 className="text-4xl md:text-5xl font-bold mb-4 text-primary">Рассчитайте стоимость</h2>
+                <p className="text-xl text-muted-foreground">
+                  Узнайте примерную стоимость вашей мебели за 30 секунд
                 </p>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-8 mt-12">
-                {[
-                  { icon: 'Target', title: 'Наша миссия', text: 'Дарить людям яркие эмоции и незабываемые впечатления через безопасные экстремальные приключения' },
-                  { icon: 'Heart', title: 'Наши ценности', text: 'Безопасность превыше всего, профессионализм в каждом действии, искренняя забота о клиентах' }
-                ].map((item, idx) => (
-                  <Card key={idx} className="border-2 hover:border-primary transition-all animate-scale-in" style={{ animationDelay: `${idx * 150}ms` }}>
-                    <CardHeader>
-                      <Icon name={item.icon as any} className="text-primary mb-4" size={48} />
-                      <CardTitle className="text-2xl">{item.title}</CardTitle>
-                      <CardDescription className="text-base leading-relaxed">{item.text}</CardDescription>
-                    </CardHeader>
-                  </Card>
-                ))}
-              </div>
+              <Card className="p-8 shadow-xl border-2 animate-scale-in">
+                <CardContent className="space-y-8">
+                  <div>
+                    <label className="text-lg font-semibold mb-4 block flex items-center gap-2">
+                      <Icon name="Ruler" size={20} className="text-primary" />
+                      Длина кухни (м): {calcLength[0]} м
+                    </label>
+                    <Slider
+                      value={calcLength}
+                      onValueChange={(val) => {
+                        setCalcLength(val);
+                        calculatePrice(val[0], calcMaterial);
+                      }}
+                      min={2}
+                      max={8}
+                      step={0.5}
+                      className="mb-2"
+                    />
+                    <div className="flex justify-between text-sm text-muted-foreground">
+                      <span>2 м</span>
+                      <span>8 м</span>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-lg font-semibold mb-4 block flex items-center gap-2">
+                      <Icon name="Layers" size={20} className="text-primary" />
+                      Материал фасада
+                    </label>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      {materials.map((material) => (
+                        <Button
+                          key={material.id}
+                          variant={calcMaterial === material.id ? 'default' : 'outline'}
+                          className="h-auto py-4 flex flex-col gap-1"
+                          onClick={() => {
+                            setCalcMaterial(material.id);
+                            calculatePrice(calcLength[0], material.id);
+                          }}
+                        >
+                          <span className="font-semibold">{material.name}</span>
+                          <span className="text-xs opacity-80">{material.price.toLocaleString()} ₽/м</span>
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-xl p-8 text-center">
+                    <div className="text-sm text-muted-foreground mb-2">Примерная стоимость</div>
+                    <div className="text-5xl font-bold text-primary mb-2">
+                      {calcPrice.toLocaleString()} ₽
+                    </div>
+                    <div className="text-sm text-muted-foreground mb-6">
+                      Финальная цена рассчитывается после замера
+                    </div>
+                    <Button size="lg" onClick={() => scrollToSection('contact')}>
+                      <Icon name="Phone" size={20} className="mr-2" />
+                      Заказать точный расчёт
+                    </Button>
+                  </div>
+
+                  <div className="grid md:grid-cols-3 gap-4 text-sm">
+                    <div className="flex items-start gap-3">
+                      <Icon name="Check" className="text-primary mt-0.5" size={18} />
+                      <span className="text-muted-foreground">Замер и дизайн-проект бесплатно</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <Icon name="Check" className="text-primary mt-0.5" size={18} />
+                      <span className="text-muted-foreground">Гарантия 5 лет на всю мебель</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <Icon name="Check" className="text-primary mt-0.5" size={18} />
+                      <span className="text-muted-foreground">Рассрочка 0% на 12 месяцев</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </section>
 
-        <section id="reviews" className="py-20 bg-gradient-to-br from-primary/5 to-secondary/5">
+        <section id="process" className="py-20 bg-gradient-to-br from-muted/30 to-background">
           <div className="container mx-auto px-4">
-            <div className="text-center mb-12 animate-fade-in">
+            <div className="text-center mb-16 animate-fade-in">
               <Badge className="mb-4" variant="outline">
-                <Icon name="Star" size={18} className="mr-2" />
-                Отзывы
+                <Icon name="Cog" size={18} className="mr-2" />
+                Процесс работы
               </Badge>
-              <h2 className="text-4xl md:text-5xl font-bold mb-4">Что говорят клиенты</h2>
-              <p className="text-xl text-muted-foreground">Реальные отзывы от наших искателей приключений</p>
+              <h2 className="text-4xl md:text-5xl font-bold mb-4 text-primary">Как мы работаем</h2>
+              <p className="text-xl text-muted-foreground">
+                От первого звонка до установки — прозрачный процесс в 6 этапов
+              </p>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-8">
-              {reviews.map((review, idx) => (
-                <Card key={idx} className="hover:shadow-xl transition-all animate-scale-in" style={{ animationDelay: `${idx * 150}ms` }}>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {process.map((item, idx) => (
+                <Card key={idx} className="relative overflow-hidden hover:shadow-xl transition-all animate-scale-in" style={{ animationDelay: `${idx * 100}ms` }}>
+                  <div className="absolute top-0 right-0 text-8xl font-bold text-primary/5">{item.step}</div>
                   <CardHeader>
-                    <div className="flex items-center gap-4 mb-4">
-                      <Avatar className="w-14 h-14 border-2 border-primary">
-                        <AvatarFallback className="bg-primary text-primary-foreground font-bold">{review.avatar}</AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <CardTitle className="text-lg">{review.name}</CardTitle>
-                        <div className="flex gap-1">
-                          {[...Array(review.rating)].map((_, i) => (
-                            <Icon key={i} name="Star" size={16} className="text-amber-400 fill-amber-400" />
-                          ))}
-                        </div>
-                      </div>
+                    <div className="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center mb-4 relative z-10">
+                      <Icon name={item.icon as any} className="text-white" size={28} />
                     </div>
-                    <CardDescription className="text-base leading-relaxed">"{review.text}"</CardDescription>
+                    <div className="flex items-center gap-3 mb-2">
+                      <Badge variant="secondary">Этап {item.step}</Badge>
+                    </div>
+                    <CardTitle className="text-xl">{item.title}</CardTitle>
+                    <CardDescription className="text-base">{item.text}</CardDescription>
                   </CardHeader>
                 </Card>
               ))}
@@ -303,7 +440,7 @@ const Index = () => {
           </div>
         </section>
 
-        <section id="contacts" className="py-20 bg-white">
+        <section id="contact" className="py-20 bg-white">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto">
               <div className="text-center mb-12 animate-fade-in">
@@ -311,48 +448,84 @@ const Index = () => {
                   <Icon name="Mail" size={18} className="mr-2" />
                   Контакты
                 </Badge>
-                <h2 className="text-4xl md:text-5xl font-bold mb-4">Свяжитесь с нами</h2>
-                <p className="text-xl text-muted-foreground">Готовы к приключениям? Напишите нам!</p>
+                <h2 className="text-4xl md:text-5xl font-bold mb-4 text-primary">Оставьте заявку</h2>
+                <p className="text-xl text-muted-foreground">
+                  Перезвоним в течение 10 минут и запишем на бесплатный замер
+                </p>
               </div>
 
               <div className="grid md:grid-cols-2 gap-8">
                 <Card className="animate-scale-in">
                   <CardHeader>
-                    <CardTitle>Наши контакты</CardTitle>
+                    <CardTitle>Контактная информация</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     {[
                       { icon: 'Phone', label: 'Телефон', value: '+7 (495) 123-45-67' },
-                      { icon: 'Mail', label: 'Email', value: 'info@extremego.ru' },
-                      { icon: 'MapPin', label: 'Адрес', value: 'Москва, ул. Приключений, 1' },
-                      { icon: 'Clock', label: 'Режим работы', value: 'Пн-Вс: 09:00 - 21:00' }
+                      { icon: 'Mail', label: 'Email', value: 'info@mebelpro.ru' },
+                      { icon: 'MapPin', label: 'Адрес', value: 'Москва, ул. Мебельная, 10' },
+                      { icon: 'Clock', label: 'График работы', value: 'Пн-Вс: 09:00 - 21:00' }
                     ].map((item, idx) => (
                       <div key={idx} className="flex items-start gap-4">
-                        <Icon name={item.icon as any} className="text-primary mt-1" size={24} />
+                        <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                          <Icon name={item.icon as any} className="text-primary" size={20} />
+                        </div>
                         <div>
-                          <div className="font-semibold">{item.label}</div>
+                          <div className="font-semibold text-sm">{item.label}</div>
                           <div className="text-muted-foreground">{item.value}</div>
                         </div>
                       </div>
                     ))}
+
+                    <div className="pt-4 border-t">
+                      <div className="font-semibold mb-3 flex items-center gap-2">
+                        <Icon name="Gift" className="text-primary" size={20} />
+                        Бонусы при заказе
+                      </div>
+                      <ul className="space-y-2 text-sm text-muted-foreground">
+                        <li className="flex items-center gap-2">
+                          <Icon name="Check" className="text-primary" size={16} />
+                          Бесплатный замер и дизайн-проект
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <Icon name="Check" className="text-primary" size={16} />
+                          Скидка 10% при заказе до конца месяца
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <Icon name="Check" className="text-primary" size={16} />
+                          Рассрочка 0% на 12 месяцев
+                        </li>
+                      </ul>
+                    </div>
                   </CardContent>
                 </Card>
 
-                <Card className="animate-scale-in" style={{ animationDelay: '150ms' }}>
+                <Card className="animate-scale-in" style={{ animationDelay: '200ms' }}>
                   <CardHeader>
                     <CardTitle>Быстрая заявка</CardTitle>
-                    <CardDescription>Оставьте контакты, мы перезвоним в течение 10 минут</CardDescription>
+                    <CardDescription>Заполните форму и мы перезвоним вам</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
-                      <Input placeholder="Ваше имя" />
-                      <Input type="tel" placeholder="Телефон" />
-                      <Input type="email" placeholder="Email" />
-                      <Textarea placeholder="Сообщение" rows={4} />
+                      <div>
+                        <label className="text-sm font-medium mb-2 block">Ваше имя</label>
+                        <Input placeholder="Иван Иванов" />
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium mb-2 block">Телефон</label>
+                        <Input type="tel" placeholder="+7 (___) ___-__-__" />
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium mb-2 block">Что вас интересует?</label>
+                        <Textarea placeholder="Например: кухня 4 метра, белый цвет" rows={4} />
+                      </div>
                       <Button className="w-full" size="lg">
                         <Icon name="Send" size={18} className="mr-2" />
                         Отправить заявку
                       </Button>
+                      <p className="text-xs text-muted-foreground text-center">
+                        Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности
+                      </p>
                     </form>
                   </CardContent>
                 </Card>
@@ -362,76 +535,71 @@ const Index = () => {
         </section>
       </main>
 
-      <footer className="bg-foreground text-background py-12">
+      <footer className="bg-primary text-white py-12">
         <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-              <Icon name="Flame" className="text-primary" size={32} />
-              <span className="text-xl font-bold">ExtremeGo</span>
+          <div className="grid md:grid-cols-4 gap-8 mb-8">
+            <div>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
+                  <Icon name="Home" className="text-primary" size={20} />
+                </div>
+                <div>
+                  <div className="text-xl font-bold">МебельПро</div>
+                  <div className="text-xs opacity-80">С 2010 года</div>
+                </div>
+              </div>
+              <p className="text-sm opacity-80">
+                Производство корпусной мебели премиум-качества
+              </p>
             </div>
-            <div className="text-center md:text-right">
-              <p>© 2024 ExtremeGo. Все права защищены.</p>
-              <p className="text-sm text-muted">Твой экстрим начинается здесь 🚀</p>
+
+            <div>
+              <h3 className="font-semibold mb-4">Услуги</h3>
+              <ul className="space-y-2 text-sm opacity-80">
+                <li>Кухни на заказ</li>
+                <li>Шкафы-купе</li>
+                <li>Гардеробные</li>
+                <li>Офисная мебель</li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="font-semibold mb-4">Информация</h3>
+              <ul className="space-y-2 text-sm opacity-80">
+                <li>О компании</li>
+                <li>Портфолио</li>
+                <li>Отзывы</li>
+                <li>Контакты</li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="font-semibold mb-4">Контакты</h3>
+              <ul className="space-y-2 text-sm opacity-80">
+                <li>+7 (495) 123-45-67</li>
+                <li>info@mebelpro.ru</li>
+                <li>Москва, ул. Мебельная, 10</li>
+                <li>Пн-Вс: 09:00 - 21:00</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="border-t border-white/20 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-sm opacity-80">
+            <div>© 2024 МебельПро. Все права защищены.</div>
+            <div className="flex gap-4">
+              <a href="#" className="hover:opacity-100 transition-opacity">Политика конфиденциальности</a>
+              <a href="#" className="hover:opacity-100 transition-opacity">Публичная оферта</a>
             </div>
           </div>
         </div>
       </footer>
 
-      {chatOpen && (
-        <div className="fixed bottom-24 right-6 w-96 max-w-[calc(100vw-48px)] bg-white rounded-2xl shadow-2xl border-2 border-primary z-50 animate-scale-in">
-          <div className="bg-gradient-to-r from-primary to-secondary p-4 rounded-t-2xl flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Avatar className="border-2 border-white">
-                <AvatarFallback className="bg-accent text-accent-foreground">🎯</AvatarFallback>
-              </Avatar>
-              <div>
-                <h3 className="font-bold text-white">Консультант ExtremeGo</h3>
-                <p className="text-xs text-white/80">Онлайн</p>
-              </div>
-            </div>
-            <Button variant="ghost" size="sm" className="text-white hover:bg-white/20" onClick={() => setChatOpen(false)}>
-              <Icon name="X" size={20} />
-            </Button>
-          </div>
-
-          <div className="h-80 overflow-y-auto p-4 space-y-3 bg-gradient-to-br from-secondary/5 to-accent/5">
-            {chatMessages.map((msg, idx) => (
-              <div key={idx} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}>
-                <div className={`max-w-[80%] px-4 py-2 rounded-2xl ${
-                  msg.sender === 'user' 
-                    ? 'bg-primary text-primary-foreground rounded-br-sm' 
-                    : 'bg-white border border-border rounded-bl-sm shadow-sm'
-                }`}>
-                  {msg.text}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="p-4 border-t bg-white rounded-b-2xl">
-            <div className="flex gap-2">
-              <Input 
-                placeholder="Напишите ваш вопрос..." 
-                value={chatInput}
-                onChange={(e) => setChatInput(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                className="flex-1"
-              />
-              <Button onClick={handleSendMessage} size="icon">
-                <Icon name="Send" size={18} />
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <Button
-        onClick={() => setChatOpen(!chatOpen)}
-        size="lg"
-        className="fixed bottom-6 right-6 rounded-full w-16 h-16 shadow-2xl hover:shadow-3xl transition-all z-40 animate-scale-in"
+      <a 
+        href="tel:+74951234567"
+        className="fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-transform z-40 animate-scale-in"
       >
-        <Icon name={chatOpen ? "X" : "MessageCircle"} size={28} />
-      </Button>
+        <Icon name="Phone" className="text-white" size={28} />
+      </a>
     </div>
   );
 };
